@@ -9,7 +9,7 @@ branches:
 cache: node_modules  # кеширование
 
 install:
-  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild 20)
+  # - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild 20)
   - npm install
   - npm install -g push-dir
 
