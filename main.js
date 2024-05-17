@@ -135,10 +135,12 @@ function identification() {
 
 // const newString = originalString.slice(0, -2);
 // функция для подсвечивания своего пользователя в окне сообщений
-function identificationMessages(params) {
+function identificationMessages() {
   const listMessageUser = chatMessages.querySelectorAll(".message-user");
   console.log("listMessageUser===", listMessageUser);
-  const myMessages = Array.from(listMessageUser).filter(el => el.textContent.slice(0, -2) === nameUs);
+  const myMessages = Array.from(listMessageUser).filter(el => {
+    el.textContent.slice(0, -2) === nameUs;
+  });
   console.log("myMessages===", myMessages);
   myMessages.forEach(element => {
     if (element) {
