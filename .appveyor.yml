@@ -9,11 +9,7 @@ branches:
 cache: node_modules  # кеширование
 
 install:
-  # Установка nvm (Node Version Manager)
-  - ps: ". { iwr https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.ps1 }"
-  # Установка требуемой версии Node.js
-  - nvm install 20
-  - nvm use 20
+  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild 20)
   - npm install
   - npm install -g push-dir
 
