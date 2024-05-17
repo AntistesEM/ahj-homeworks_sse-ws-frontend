@@ -9,8 +9,12 @@ branches:
 cache: node_modules  # кеширование
 
 install:
-  - ps: Install-Product node 20.x
-  - npm install   # команда установки зависимостей
+  # Установка nvm (Node Version Manager)
+  - ps: ". { iwr https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.ps1 }"
+  # Установка требуемой версии Node.js
+  - nvm install 20
+  - nvm use 20
+  - npm install
   - npm install -g push-dir
 
 build: off  # отключаем встроенную в appveyor систему сборки
