@@ -9,7 +9,9 @@ branches:
 cache: node_modules  # кеширование
 
 install:
-  - npm install  # команда установки зависимостей
+  - ps: Install-Product node 20.x
+  - npm install   # команда установки зависимостей
+  - npm install -g push-dir
 
 build: off  # отключаем встроенную в appveyor систему сборки
 
