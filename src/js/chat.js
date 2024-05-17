@@ -1,7 +1,7 @@
 // Создаем новое WebSocket-соединение с сервером на ws://localhost:8080
 // const socket = new WebSocket('ws://localhost:8080');
 const socket = new WebSocket(
-  "wss://ahj-homeworks-sse-ws-backend.onrender.com:8080",
+  "wss://ahj-homeworks-sse-ws-backend.onrender.com:8080"
 );
 
 // Получаем ссылки на элементы интерфейса
