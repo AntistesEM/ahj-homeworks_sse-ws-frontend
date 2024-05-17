@@ -1,8 +1,6 @@
 // Создаем новое WebSocket-соединение с сервером на ws://localhost:8080
 // const socket = new WebSocket('ws://localhost:8080');
-const socket = new WebSocket(
-  "wss://ahj-homeworks-sse-ws-backend.onrender.com:8080"
-);
+const socket = new WebSocket("wss://ahj-homeworks-sse-ws-backend.onrender.com:8080");
 
 // Получаем ссылки на элементы интерфейса
 const pseudonymDiv = document.querySelector(".modal-pseudonym");
@@ -133,12 +131,12 @@ function identification() {
 
 // const newString = originalString.slice(0, -2);
 // функция для подсвечивания своего пользователя в окне сообщений
-function identificationMessages(params) {
+function identificationMessages() {
   const listMessageUser = chatMessages.querySelectorAll(".message-user");
   console.log("listMessageUser===", listMessageUser);
-  const myMessages = Array.from(listMessageUser).filter(
-    (el) => el.textContent.slice(0, -2) === nameUs,
-  );
+  const myMessages = Array.from(listMessageUser).filter((el) => {
+    el.textContent.slice(0, -2) === nameUs;
+  });
   console.log("myMessages===", myMessages);
   myMessages.forEach((element) => {
     if (element) {
