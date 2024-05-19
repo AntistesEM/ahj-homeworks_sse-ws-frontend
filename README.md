@@ -1,5 +1,7 @@
 ![CI](https://github.com/AntistesEM/ahj-homeworks_sse-ws-frontend/actions/workflows/web.yml/badge.svg)
 
+[ссылка на Github Pages](https://antistesem.github.io/ahj-homeworks_sse-ws-frontend/)
+
 # Домашнее задание к занятию "8. EventSource, Websockets"
 
 Правила сдачи задания:
