@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
-    "browser-sync": "^3.0.2",
+    "browser-sync": "^2.29.3",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.0.0"
   }
