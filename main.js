@@ -1,199 +1,199 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	var __webpack_modules__ = ({
+/******/ 	"use strict";
+var __webpack_exports__ = {};
 
-/***/ 403:
-/***/ (() => {
-
-// Создаем новое WebSocket-соединение с сервером на ws://localhost:8080
-// const socket = new WebSocket('ws://localhost:8080');
-const socket = new WebSocket("wss://ahj-homeworks-sse-ws-backend.onrender.com:8080");
-
-// Получаем ссылки на элементы интерфейса
-const pseudonymDiv = document.querySelector(".modal-pseudonym");
-const messageInput = pseudonymDiv.querySelector(".pseudonym-text");
-const sendButton = pseudonymDiv.querySelector(".pseudonym-btn");
-const wrap = document.querySelector(".wrap");
-const chatMessages = document.querySelector(".chat-messages");
-const chatInputText = document.querySelector(".chat-input-text");
-let nameUs = "";
-
-// Функция, которая вызывается при открытии WebSocket-соединения
-socket.onopen = function () {
-  console.log("WebSocket connection opened");
-};
-
-// Функция, которая вызывается при получении сообщения от сервера
-socket.onmessage = function (event) {
-  const data = JSON.parse(event.data); // Получаем само сообщение
-
-  console.log("Received message:", data); // Выводим сообщение в консоль
-
-  if (data.chat) {
-    const dataChat = data.chat.message;
-    createMessages(dataChat.name, dataChat.messageDate, dataChat.message);
-    scrollToBottom();
-  } else if (data.error) {
-    messageInput.classList.add("error");
-    messageInput.setAttribute("placeholder", data.error);
-  } else if (data.name) {
-    nameUs = data.name.name;
-    pseudonymDiv.style.display = "none";
-    wrap.style.display = "block";
-    const divUsers = wrap.querySelector(".chat-users");
-    divUsers.innerHTML = "";
-    createUser(nameUs);
-  } else if (data.list) {
-    const divUsers = wrap.querySelector(".chat-users");
-    divUsers.innerHTML = "";
-    data.list.forEach(name => {
-      createUser(name);
+;// CONCATENATED MODULE: ./src/js/modal.js
+const container = document.querySelector(".container");
+const url = "http://localhost:3000/";
+let tickedId;
+function init() {
+  showLoader();
+  fetch(url + "?method=allTickets").then(res => res.json()).then(json => {
+    json.forEach(ticket => {
+      const date = formatDate(ticket.created);
+      const newTicket = createTicketElement(ticket.id, ticket.name, date, ticket.status);
+      const listTickets = container.querySelector(".list-tickets");
+      listTickets.appendChild(newTicket);
+      hideLoader();
     });
+  });
+}
+function createTicketElement(id, title, date, status, description = null) {
+  // Создаем основной div.ticket
+  const ticketDiv = document.createElement("div");
+  ticketDiv.classList.add("ticket");
+  ticketDiv.id = id;
+
+  // Создаем div.wrap
+  const wrapDiv = document.createElement("div");
+  wrapDiv.classList.add("wrap");
+
+  // Создаем div.ticket-input-wrap
+  const inputWrapDiv = document.createElement("div");
+  inputWrapDiv.classList.add("ticket-input-wrap");
+
+  // Создаем label
+  const labelElement = document.createElement("label");
+
+  // Создаем input
+  const inputElement = document.createElement("input");
+  inputElement.type = "checkbox";
+  inputElement.classList.add("ticket-input");
+  if (status) {
+    inputElement.checked = true;
   }
-};
 
-// Функция, которая вызывается при закрытии WebSocket-соединения
-socket.onclose = function () {
-  console.log("WebSocket connection closed");
-};
+  // Создаем span.ticket-input-span
+  const inputSpanElement = document.createElement("span");
+  inputSpanElement.classList.add("ticket-input-span");
 
-// Функция, которая вызывается при возникновении ошибки в WebSocket-соединении
-socket.onerror = function (error) {
-  console.error("WebSocket error:", error);
-};
+  // Создаем span.ticket-title
+  const titleSpanElement = document.createElement("span");
+  titleSpanElement.classList.add("ticket-title");
+  titleSpanElement.textContent = title;
 
-// Обработчик события клика на кнопку "Продолжить"
-sendButton.addEventListener("click", function () {
-  const message = messageInput.value; // Получаем текст из поля ввода
-  if (message.trim() !== "") {
-    // Если поле не пустое
-    const messageObject = JSON.stringify({
-      userName: message.toString()
+  // Создаем div.ticket-btns
+  const btnsDiv = document.createElement("div");
+  btnsDiv.classList.add("ticket-btns");
+
+  // Создаем span.ticket-date
+  const dateSpanElement = document.createElement("span");
+  dateSpanElement.classList.add("ticket-date");
+  dateSpanElement.textContent = date;
+
+  // Создаем button.ticket-btn-edit
+  const editButtonElement = document.createElement("button");
+  editButtonElement.classList.add("ticket-btn-edit");
+
+  // Создаем button.ticket-btn-delete
+  const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.classList.add("ticket-btn-delete");
+
+  // Создаем p.description
+  const descriptionElement = document.createElement("p");
+  descriptionElement.classList.add("description");
+  descriptionElement.textContent = description;
+
+  // Собираем структуру
+  labelElement.appendChild(inputElement);
+  labelElement.appendChild(inputSpanElement);
+  inputWrapDiv.appendChild(labelElement);
+  inputWrapDiv.appendChild(titleSpanElement);
+  btnsDiv.appendChild(dateSpanElement);
+  btnsDiv.appendChild(editButtonElement);
+  btnsDiv.appendChild(deleteButtonElement);
+  wrapDiv.appendChild(inputWrapDiv);
+  wrapDiv.appendChild(btnsDiv);
+  ticketDiv.appendChild(wrapDiv);
+  ticketDiv.appendChild(descriptionElement);
+  return ticketDiv;
+}
+container.addEventListener("click", e => {
+  if (e.target.classList.contains("add-tickets")) {
+    const modal = document.querySelector(".add");
+    modal.style.display = "block";
+  } else if (e.target.classList.contains("ticket-btn-edit")) {
+    const parent = e.target.closest(".ticket");
+    tickedId = parent.id;
+    const modal = document.querySelector(".edit");
+    modal.style.display = "block";
+  } else if (e.target.classList.contains("ticket-btn-delete")) {
+    const parent = e.target.closest(".ticket");
+    tickedId = parent.id;
+    const modal = document.querySelector(".delete");
+    modal.style.display = "block";
+  } else if (e.target.classList.contains("ticket-title")) {
+    const parent = e.target.closest(".ticket");
+    const description = parent.querySelector(".description");
+    const uri = `?method=ticketById&id=${parent.id}`;
+    fetch(url + uri).then(res => res.json()).then(json => {
+      description.textContent = json.description;
+      toggleDisplay(description);
     });
-    socket.send(messageObject); // Отправляем сообщение на сервер
-    messageInput.value = ""; // Очищаем поле ввода
-  }
-});
-
-// Обработчик события нажатия клавиши в поле ввода
-messageInput.addEventListener("keyup", function (event) {
-  if (event.key === "Enter" && messageInput.value.trim() !== "") {
-    // Если нажата клавиша Enter и строка не пустая
-    sendButton.click(); // Имитируем клик на кнопку "Продолжить"
-  }
-});
-
-// Обработчик события фокусировки на поле ввода псевдонима
-messageInput.addEventListener("focus", () => {
-  messageInput.classList.remove("error");
-  messageInput.setAttribute("placeholder", "Введите псевдоним");
-});
-
-// Обработчик события нажатия клавиши Enter в поле ввода сообщений
-chatInputText.addEventListener("keyup", function (event) {
-  if (event.key === "Enter" && chatInputText.value.trim() !== "") {
-    // Если нажата клавиша Enter и строка не пустая
-    const message = chatInputText.value;
-    const messageDate = formatDate(new Date());
-    const messageObject = JSON.stringify({
-      message: {
-        name: nameUs,
-        message: message.toString(),
-        messageDate
+  } else if (e.target.classList.contains("ticket-input-span")) {
+    const parent = e.target.closest(".ticket");
+    const checkedEl = parent.querySelector(".ticket-input");
+    let status;
+    if (checkedEl.checked === true) {
+      status = false;
+    } else {
+      status = true;
+    }
+    const body = {
+      status: status
+    };
+    const uri = `?method=updateTicketStatus&id=${parent.id}`;
+    fetch(url + uri, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json"
       }
+    }).then(response => response.json()).then(json => {
+      console.log("Status updated:", json);
+    }).catch(error => {
+      console.error("Error updating status:", error);
     });
-    socket.send(messageObject); // Отправляем сообщение на сервер
-    chatInputText.value = ""; // Очищаем поле ввода
   }
 });
-
-// Обработчик события при закрытии соединения отправляем имя
-window.addEventListener("beforeunload", () => {
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({
-      close: nameUs
-    }));
-  }
-});
-
-// функция для прокручивания контейнера вниз при добавлении нового сообщения
-function scrollToBottom() {
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// функция для подсвечивания своего пользователя в окне участников
-function identification() {
-  const chatUsers = wrap.querySelector(".chat-users");
-  const listUserNameElements = chatUsers.querySelectorAll(".user-name");
-  const myUser = Array.from(listUserNameElements).find(el => {
-    return el.textContent === nameUs;
-  });
-  if (myUser) {
-    myUser.textContent = "You";
-    myUser.classList.add("my-user");
-  }
-}
-
-// const newString = originalString.slice(0, -2);
-// функция для подсвечивания своего пользователя в окне сообщений
-function identificationMessages() {
-  const listMessageUser = chatMessages.querySelectorAll(".message-user");
-  console.log("listMessageUser===", listMessageUser);
-  const myMessages = Array.from(listMessageUser).filter(el => {
-    el.textContent.slice(0, -2) === nameUs;
-  });
-  console.log("myMessages===", myMessages);
-  myMessages.forEach(element => {
-    if (element) {
-      console.log("element===", element);
-      element.textContent = "You, ";
-      const parent = element.closest(".chat-message");
-      console.log("parent=", parent);
-      parent.classList.add("my-message");
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", e => {
+    if (e.target.classList.contains("btn-cancel")) {
+      modal.style.display = "none";
+    } else if (e.target.classList.contains("btn-ok")) {
+      if (modal.classList.contains("add")) {
+        const name = modal.querySelector(".modal-input").value;
+        const description = modal.querySelector(".modal-textarea").value;
+        const newTicket = {
+          name: name,
+          description: description,
+          status: false
+        };
+        requestMy("?method=createTicket", {
+          method: "POST",
+          body: JSON.stringify(newTicket),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+      } else if (modal.classList.contains("delete")) {
+        const uri = `?method=ticketDelById&id=${tickedId}`;
+        fetch(url + uri).then(res => res.json()).then(json => {
+          return json;
+        });
+      } else if (modal.classList.contains("edit")) {
+        const updatedName = modal.querySelector(".modal-input").value;
+        const updatedDescription = modal.querySelector(".modal-textarea").value;
+        const data = {
+          name: updatedName,
+          description: updatedDescription
+        };
+        const uri = `?method=updateTicket&id=${tickedId}`;
+        const urlNew = url + uri;
+        fetch(urlNew, {
+          method: "PATCH",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(response => response.json()).then(json => {
+          console.log("Ticket updated:", json);
+        }).catch(error => {
+          console.error("Error updating ticket:", error);
+        });
+      }
     }
   });
+});
+function toggleDisplay(description) {
+  description.style.display = description.style.display === "none" ? "block" : "none";
 }
-
-// функция создания пользователя в списке участников
-function createUser(name = "Name") {
-  const divUsers = wrap.querySelector(".chat-users");
-  const divWrap = document.createElement("div");
-  divWrap.classList.add("user-wrap");
-  const img = document.createElement("img");
-  img.classList.add("user-img");
-  const span = document.createElement("span");
-  span.classList.add("user-name");
-  span.textContent = name;
-  divWrap.appendChild(img);
-  divWrap.appendChild(span);
-  divUsers.appendChild(divWrap);
-  identification();
+function requestMy(uri, options = null) {
+  const urlNew = url + uri;
+  fetch(urlNew, options).then(res => res.json()).then(json => {
+    return json;
+  });
 }
-
-// функция создания сообщения в окне чата
-function createMessages(name = "Name", date = new Date(), message = "Message") {
-  const divMessages = wrap.querySelector(".chat-messages");
-  const divChatMessage = document.createElement("div");
-  divChatMessage.classList.add("chat-message");
-  const divMessageData = document.createElement("div");
-  divMessageData.classList.add("message-data");
-  const spanMessageUser = document.createElement("span");
-  spanMessageUser.classList.add("message-user");
-  spanMessageUser.textContent = name + ", ";
-  const spanMessageDate = document.createElement("span");
-  spanMessageDate.classList.add("message-date");
-  spanMessageDate.textContent = date;
-  const spanMessageText = document.createElement("span");
-  spanMessageText.classList.add("message-text");
-  spanMessageText.textContent = message;
-  divMessageData.appendChild(spanMessageUser);
-  divMessageData.appendChild(spanMessageDate);
-  divChatMessage.appendChild(divMessageData);
-  divChatMessage.appendChild(spanMessageText);
-  divMessages.appendChild(divChatMessage);
-  identificationMessages();
-}
-
-// функция для форматирования формата даты и времени
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   const day = String(date.getDate()).padStart(2, "0");
@@ -201,53 +201,28 @@ function formatDate(timestamp) {
   const year = String(date.getFullYear()).slice(-2);
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes} ${day}.${month}.${year}`;
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
 }
 
-/***/ })
+// Функция для показа иконки загрузки
+function showLoader() {
+  const loaderContainer = document.getElementById('loader');
+  loaderContainer.style.display = 'flex';
+}
 
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-
-// EXTERNAL MODULE: ./src/js/chat.js
-var chat = __webpack_require__(403);
+// Функция для скрытия иконки загрузки
+function hideLoader() {
+  const loaderContainer = document.getElementById('loader');
+  loaderContainer.style.display = 'none';
+}
 ;// CONCATENATED MODULE: ./src/js/app.js
 
+
+init();
 ;// CONCATENATED MODULE: ./src/index.js
 
 
 
 // TODO: write your code in app.js
-})();
-
 /******/ })()
 ;
