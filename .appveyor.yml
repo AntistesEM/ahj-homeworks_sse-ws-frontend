@@ -26,6 +26,6 @@ deploy_script:  # скрипт развёртывания
   - git config --global credential.helper store
   - git config --global user.name AppVeyor
   - git config --global user.email ci@appveyor.com
-  - echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > "$HOME/.git-credentials"
+  - echo "https://$GITHUB_PAT:x-oauth-basic@github.com" > "$HOME/.git-credentials"
   - npx gh-pages -d dist --repo https://github.com/AntistesEM/ahj-homeworks_sse-ws-frontend.git
   # - npx push-dir --dir=dist --branch=gh-pages --force --verbose
